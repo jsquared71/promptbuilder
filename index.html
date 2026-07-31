@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prompt Builder — describe the app you want built</title>
+  <meta name="description" content="Click predefined terms to build a precise prompt for graphical apps, simulations and games.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🎛️</text></svg>">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <h1>Prompt Builder</h1>
+      <p class="tagline">Click the terms. Get a prompt worth pasting.</p>
+    </div>
+    <button id="theme-toggle" class="icon-button" type="button" aria-label="Switch theme">
+      <span aria-hidden="true">◐</span>
+    </button>
+  </header>
+
+  <main class="layout">
+    <section class="builder" aria-label="Term picker">
+      <div class="starters">
+        <h2 class="starters-title">Start from a template</h2>
+        <div id="presets" class="presets"></div>
+      </div>
+
+      <div class="toolbar">
+        <label class="search-field">
+          <span class="visually-hidden">Search terms</span>
+          <input id="search" type="search" placeholder="Search all terms — try &ldquo;camera&rdquo; or &ldquo;noise&rdquo;" autocomplete="off">
+        </label>
+        <button id="clear" class="ghost-button" type="button">Clear all</button>
+      </div>
+
+      <div id="sections"></div>
+    </section>
+
+    <aside class="preview" aria-label="Generated prompt">
+      <div class="preview-inner">
+        <div class="preview-head">
+          <h2>Your prompt</h2>
+          <span id="stats" class="stats"></span>
+        </div>
+
+        <div id="chosen" class="chosen"></div>
+
+        <textarea id="prompt-output" class="output" spellcheck="false"
+                  aria-label="Generated prompt — editable"></textarea>
+
+        <p id="edited-notice" class="edited-notice" hidden>
+          You&rsquo;ve edited this prompt, so it won&rsquo;t update automatically.
+          <button id="revert" class="link-button" type="button">Revert to generated</button>
+        </p>
+
+        <div class="preview-actions">
+          <button id="copy" class="primary-button" type="button">Copy prompt</button>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Small screens stack the panes, so the prompt ends up well below the fold. -->
+  <a id="jump" class="jump-to-prompt" href="#prompt-output" hidden>
+    Your prompt <span id="jump-count" class="jump-count">0</span>
+  </a>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
