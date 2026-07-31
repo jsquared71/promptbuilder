@@ -132,6 +132,9 @@ hash (compact, comma-separated ids) and mirrored to localStorage for crash recov
 
 ## 6. Milestones
 
+> **Status:** M1–M4 are implemented. See `README.md` for how to run it. Remaining work is the
+> "Later / ideas" list below.
+
 **M1 — MVP (core loop works end to end)**
 - Layout with category sections, clickable chips, live preview, copy button.
 - Term data for the 5 highest-value categories: app type, genre/subject, rendering tech,
