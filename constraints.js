@@ -1,0 +1,107 @@
+/** Category: constraints. Reads after "Requirements: ...". */
+export const constraints = [
+  {
+    id: 'single-file',
+    label: 'Single HTML file',
+    description: 'Everything in one self-contained file you can double-click to run.',
+    promptText: 'deliver it as a single self-contained HTML file that runs by opening it',
+  },
+  {
+    id: 'no-libraries',
+    label: 'No external libraries',
+    description: 'Vanilla JavaScript only — nothing to install, nothing to break.',
+    promptText: 'use no external libraries or frameworks',
+    conflictsWith: ['three-js', 'p5-js', 'pixi-js', 'physics-engine'],
+  },
+  {
+    id: 'no-build',
+    label: 'No build step',
+    description: 'Runs straight from source in the browser, no bundler or transpiler.',
+    promptText: 'require no build step — it should run straight from source',
+  },
+  {
+    id: 'es-modules',
+    label: 'ES modules',
+    description: 'Code split across importable modules instead of one long file.',
+    promptText: 'organise the code as ES modules with clear responsibilities',
+    conflictsWith: ['single-file'],
+  },
+  {
+    id: 'fps60',
+    label: '60fps target',
+    description: 'A smooth frame budget of about 16ms, with the work sized to fit.',
+    promptText: 'hold a steady 60fps',
+  },
+  {
+    id: 'fixed-timestep',
+    label: 'Fixed timestep loop',
+    description: 'Physics advanced in constant steps with an accumulator, so behavior is frame-rate independent.',
+    promptText: 'run physics on a fixed timestep with an accumulator so behaviour is frame-rate independent',
+  },
+  {
+    id: 'separate-update-render',
+    label: 'Separate update & render',
+    description: 'Simulation logic kept apart from drawing code. Easier to reason about and to test.',
+    promptText: 'keep the update and render steps cleanly separated',
+  },
+  {
+    id: 'object-pooling',
+    label: 'Object pooling',
+    description: 'Reusing objects instead of allocating per frame, avoiding garbage-collection stutter.',
+    promptText: 'pool and reuse short-lived objects to avoid garbage-collection hitches',
+  },
+  {
+    id: 'offscreen-canvas',
+    label: 'Offscreen buffers',
+    description: 'Pre-rendering static layers once instead of redrawing them every frame.',
+    promptText: 'pre-render static layers to offscreen buffers',
+  },
+  {
+    id: 'responsive',
+    label: 'Responsive canvas',
+    description: 'Filling and adapting to the window, handling resize and device pixel ratio.',
+    promptText: 'resize responsively to the window and respect device pixel ratio',
+  },
+  {
+    id: 'mobile',
+    label: 'Mobile friendly',
+    description: 'Usable on a phone: touch targets, no hover dependence, sensible performance.',
+    promptText: 'work well on mobile, with touch-sized targets and no reliance on hover',
+  },
+  {
+    id: 'accessible',
+    label: 'Accessible',
+    description: 'Keyboard reachable, labelled controls, readable contrast.',
+    promptText: 'be keyboard accessible with labelled controls and readable contrast',
+  },
+  {
+    id: 'reduced-motion',
+    label: 'Respect reduced motion',
+    description: 'Honoring prefers-reduced-motion by damping shake, flashing and parallax.',
+    promptText: 'honour prefers-reduced-motion by damping shake, flashing and parallax',
+  },
+  {
+    id: 'commented',
+    label: 'Commented code',
+    description: 'Explanations where the reasoning is not obvious from the code itself.',
+    promptText: 'comment the parts where the reasoning is not obvious',
+  },
+  {
+    id: 'tunable-constants',
+    label: 'Constants at the top',
+    description: 'Tuning values gathered in one block so they are easy to find and change.',
+    promptText: 'gather the tunable constants into one clearly marked block at the top',
+  },
+  {
+    id: 'unit-tests',
+    label: 'Tests for the logic',
+    description: 'Coverage of the pure simulation and rules, separate from rendering.',
+    promptText: 'include tests for the pure logic, separate from the rendering',
+  },
+  {
+    id: 'readme',
+    label: 'README',
+    description: 'How to run it, what the controls are, how it works.',
+    promptText: 'include a short README covering how to run it and what the controls are',
+  },
+];

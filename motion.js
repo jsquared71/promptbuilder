@@ -1,0 +1,97 @@
+/** Category: motion. Reads after "For motion and feel, add ...". */
+export const motion = [
+  {
+    id: 'game-juice',
+    label: 'Juice',
+    description: 'The umbrella term for layered feedback — shake, flash, pop, sound — on every action. The difference between functional and fun.',
+    promptText: 'plenty of "juice": layered visual and audio feedback on every action',
+  },
+  {
+    id: 'tweening',
+    label: 'Easing / tweening',
+    description: 'Values animated along a curve instead of snapping. Nothing should teleport.',
+    promptText: 'eased tweening between states rather than instant snapping',
+  },
+  {
+    id: 'sprite-anim',
+    label: 'Sprite animation',
+    description: 'Cycling through frames of a sheet to animate a character.',
+    promptText: 'frame-based sprite animation',
+  },
+  {
+    id: 'parallax',
+    label: 'Parallax scrolling',
+    description: 'Background layers moving slower than the foreground, faking depth.',
+    promptText: 'parallax background layers that move at different speeds',
+  },
+  {
+    id: 'screen-shake',
+    label: 'Screen shake',
+    description: 'A brief camera jolt on impacts. Use less than you think.',
+    promptText: 'a short screen shake on impacts',
+  },
+  {
+    id: 'hit-stop',
+    label: 'Hit stop',
+    description: 'Freezing everything for a few frames at the moment of impact so hits land harder.',
+    promptText: 'hit stop — a few frames of freeze on impact',
+  },
+  {
+    id: 'particles',
+    label: 'Particle effects',
+    description: 'Bursts of short-lived sprites for dust, sparks, smoke and explosions.',
+    promptText: 'particle bursts for impacts, dust and explosions',
+    suggests: ['object-pooling'],
+  },
+  {
+    id: 'trails',
+    label: 'Motion trails',
+    description: 'Fading history behind moving objects, showing where they have been.',
+    promptText: 'fading motion trails behind moving objects',
+  },
+  {
+    id: 'squash-stretch',
+    label: 'Squash & stretch',
+    description: 'Deforming along the direction of motion. The oldest animation trick there is.',
+    promptText: 'squash and stretch on jumps and landings',
+  },
+  {
+    id: 'camera-follow',
+    label: 'Smooth camera follow',
+    description: 'A camera that lags slightly behind the player instead of locking to them.',
+    promptText: 'a camera that smoothly follows the player with a little lag',
+  },
+  {
+    id: 'camera-lookahead',
+    label: 'Camera look-ahead',
+    description: 'Shifting the view in the direction of travel so you see what is coming.',
+    promptText: 'camera look-ahead in the direction of travel',
+    suggests: ['camera-follow'],
+  },
+  {
+    id: 'ui-transitions',
+    label: 'UI transitions',
+    description: 'Menus and panels that slide and fade rather than appearing instantly.',
+    promptText: 'animated transitions between menus and screens',
+  },
+  {
+    id: 'idle-anim',
+    label: 'Idle animation',
+    description: 'Gentle motion when nothing is happening, so the scene never looks frozen.',
+    promptText: 'subtle idle animation so nothing ever looks frozen',
+  },
+  {
+    id: 'ragdoll',
+    label: 'Ragdoll',
+    description: 'Characters going limp and flopping under physics on defeat.',
+    promptText: 'ragdoll physics on defeat',
+    suggests: ['rigid-body'],
+  },
+  {
+    id: 'interpolation',
+    label: 'Render interpolation',
+    description: 'Drawing between fixed physics steps so motion stays smooth at any frame rate.',
+    promptText: 'interpolated rendering between fixed physics steps',
+    suggests: ['fixed-timestep'],
+  },
+];
