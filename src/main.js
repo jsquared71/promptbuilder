@@ -1,8 +1,12 @@
 import { buildPrompt, promptStats, EMPTY_PROMPT_HINT } from './promptBuilder.js';
 import { createStore, readInitialState, persist } from './state.js';
-import { buildSections, syncSections, syncNotes, renderPresets, renderChosen } from './render.js';
+import { getMode } from './modes.js';
+import {
+  buildSections, syncSections, syncNotes, renderPresets, renderChosen, buildModes, syncModes,
+} from './render.js';
 
 const dom = {
+  modes: document.getElementById('modes'),
   sections: document.getElementById('sections'),
   presets: document.getElementById('presets'),
   search: document.getElementById('search'),
@@ -22,15 +26,34 @@ const store = createStore(readInitialState());
 let query = '';
 /** True once the user has hand-edited the prompt; we stop overwriting them then. */
 let edited = false;
+/** The mode whose chips are currently in the DOM. */
+let builtModeId = null;
+
+/** Rebuilds the chips and presets — only when the mode actually changes. */
+function buildForMode(mode) {
+  buildSections(dom.sections, mode, {
+    onToggle: (id) => store.toggle(id),
+    onNote: (section, text) => store.setNote(section, text),
+  });
+  renderPresets(dom.presets, mode, (presetId) => {
+    edited = false;
+    store.usePreset(presetId);
+  });
+  dom.search.placeholder = `Search all terms — ${mode.searchHint}`;
+  syncModes(dom.modes, mode.id);
+  builtModeId = mode.id;
+}
 
 function render() {
   const state = store.getState();
+  const mode = getMode(state.mode);
+  if (mode.id !== builtModeId) buildForMode(mode);
 
   syncSections(state, { query, appType: store.appType() });
   syncNotes(state.notes);
-  renderChosen(dom.chosen, state, (id) => store.toggle(id));
+  renderChosen(dom.chosen, state, mode, (id) => store.toggle(id));
 
-  const prompt = buildPrompt(state.selected, state.notes);
+  const prompt = buildPrompt(state.selected, state.notes, mode.id);
   if (!edited) {
     dom.output.value = prompt;
   }
@@ -43,16 +66,16 @@ function render() {
   dom.jumpCount.textContent = String(terms);
   dom.jump.hidden = terms === 0;
 
-  persist({ selected: state.selected, notes: state.notes });
+  persist(store.serialize());
 }
 
-buildSections(dom.sections, {
-  onToggle: (id) => store.toggle(id),
-  onNote: (section, text) => store.setNote(section, text),
-});
-renderPresets(dom.presets, (presetId) => {
+buildModes(dom.modes, (modeId) => {
+  if (modeId === store.mode()) return;
+  // A hand-edited prompt belongs to the mode it was written in.
   edited = false;
-  store.usePreset(presetId);
+  dom.search.value = '';
+  query = '';
+  store.setMode(modeId);
 });
 
 store.subscribe(render);

@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Prompt Builder — describe the app you want built</title>
-  <meta name="description" content="Click predefined terms to build a precise prompt for graphical apps, simulations and games.">
+  <title>Prompt Builder — click terms, get a better prompt</title>
+  <meta name="description" content="Click predefined terms to build a precise AI prompt — for apps and code, games and simulations, writing, data analysis, AI assistants and images.">
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🎛️</text></svg>">
 </head>
@@ -21,6 +21,11 @@
 
   <main class="layout">
     <section class="builder" aria-label="Term picker">
+      <div class="mode-picker">
+        <h2 class="starters-title" id="modes-title">What is the prompt for?</h2>
+        <div id="modes" class="modes" role="group" aria-labelledby="modes-title"></div>
+      </div>
+
       <div class="starters">
         <h2 class="starters-title">Start from a template</h2>
         <div id="presets" class="presets"></div>
@@ -29,7 +34,7 @@
       <div class="toolbar">
         <label class="search-field">
           <span class="visually-hidden">Search terms</span>
-          <input id="search" type="search" placeholder="Search all terms — try &ldquo;camera&rdquo; or &ldquo;noise&rdquo;" autocomplete="off">
+          <input id="search" type="search" placeholder="Search all terms" autocomplete="off">
         </label>
         <button id="clear" class="ghost-button" type="button">Clear all</button>
       </div>

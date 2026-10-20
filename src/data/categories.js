@@ -1,4 +1,6 @@
 /**
+ * Categories and sections for the graphical mode (see src/data/modes/graphical.js).
+ *
  * Sections group categories into the panels the user sees, and each section
  * becomes one paragraph of the generated prompt.
  *
@@ -21,7 +23,7 @@ export const CATEGORIES = [
     selectMode: 'single',
     // The genre list is long and app-type specific, so it stays hidden until
     // there is something to filter it by.
-    requiresAppType: true,
+    requiresFilter: true,
   },
   {
     id: 'tech',
@@ -145,6 +147,3 @@ export const SECTIONS = [
     notePlaceholder: 'e.g. it has to work offline on an old iPad',
   },
 ];
-
-export const CATEGORIES_BY_ID = new Map(CATEGORIES.map((c) => [c.id, c]));
-export const SECTION_IDS = SECTIONS.map((s) => s.id);

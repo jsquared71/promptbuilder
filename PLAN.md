@@ -132,7 +132,7 @@ hash (compact, comma-separated ids) and mirrored to localStorage for crash recov
 
 ## 6. Milestones
 
-> **Status:** M1–M4 are implemented. See `README.md` for how to run it. Remaining work is the
+> **Status:** M1–M5 are implemented. See `README.md` for how to run it. Remaining work is the
 > "Later / ideas" list below.
 
 **M1 — MVP (core loop works end to end)**
@@ -153,6 +153,15 @@ hash (compact, comma-separated ids) and mirrored to localStorage for crash recov
 **M4 — Polish & deploy**
 - Responsive/mobile layout, dark/light theme, keyboard navigation and ARIA on chips.
 - GitHub Pages deployment via Actions; README with screenshots.
+
+**M5 — Prompt types beyond graphics**
+- A prompt-type switcher above the templates: Graphics & games (the original taxonomy),
+  Apps & code, Writing, Data & analysis, AI assistant (system prompts) and Image.
+- Each type is a self-contained data module (categories, sections, terms, presets and an
+  `opening` function) compiled and validated by `src/modes.js`; `buildPrompt`, the selection
+  rules and rendering are shared.
+- Each type keeps its own selection and notes; the URL hash gains `m=<type>`, omitted for
+  Graphics & games so earlier shared links still resolve.
 
 **Later / ideas**
 - "Open in Claude" deep link with the prompt prefilled.

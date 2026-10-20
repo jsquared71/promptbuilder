@@ -96,5 +96,3 @@ export const PRESETS = [
     ],
   },
 ];
-
-export const PRESETS_BY_ID = new Map(PRESETS.map((p) => [p.id, p]));

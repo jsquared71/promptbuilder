@@ -1,11 +1,13 @@
-import { CATEGORIES_BY_ID, SECTIONS } from './data/categories.js';
-import { TERMS_BY_CATEGORY, TERMS_BY_ID, appliesToAppType } from './data/terms/index.js';
-import { PRESETS } from './data/presets.js';
+import { MODES, appliesToFilter } from './modes.js';
 
-/** DOM handles built once in buildSections and updated in place afterwards. */
-const chipNodes = new Map(); // term id -> button
-const categoryNodes = new Map(); // category id -> section element
-const sectionNodes = new Map(); // section id -> { details, badge, note }
+/**
+ * DOM handles built in buildSections and updated in place afterwards. They are
+ * rebuilt only when the mode changes, never on an ordinary click.
+ */
+let chipNodes = new Map(); // term id -> button
+let categoryNodes = new Map(); // category id -> section element
+let sectionNodes = new Map(); // section id -> { details, badge, note }
+let builtMode = null;
 
 function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -29,11 +31,17 @@ function buildChip(term) {
 }
 
 /**
- * Builds the whole chip UI once. Later updates only touch attributes and
+ * Builds the chip UI for one mode. Later updates only touch attributes and
  * classes, so free-text fields never lose focus mid-typing.
  */
-export function buildSections(container, { onToggle, onNote }) {
-  for (const section of SECTIONS) {
+export function buildSections(container, mode, { onToggle, onNote }) {
+  chipNodes = new Map();
+  categoryNodes = new Map();
+  sectionNodes = new Map();
+  builtMode = mode;
+  container.replaceChildren();
+
+  for (const section of mode.sections) {
     const details = el('details', 'section');
     details.open = Boolean(section.defaultOpen);
     details.dataset.sectionId = section.id;
@@ -46,7 +54,7 @@ export function buildSections(container, { onToggle, onNote }) {
     details.append(summary);
 
     for (const categoryId of section.categories) {
-      const category = CATEGORIES_BY_ID.get(categoryId);
+      const category = mode.categoriesById.get(categoryId);
       const block = el('div', 'category');
       block.dataset.categoryId = categoryId;
 
@@ -55,7 +63,7 @@ export function buildSections(container, { onToggle, onNote }) {
       if (category.hint) block.append(el('p', 'category-hint', category.hint));
 
       const chips = el('div', 'chips');
-      for (const term of TERMS_BY_CATEGORY.get(categoryId)) {
+      for (const term of mode.termsByCategory.get(categoryId)) {
         const chip = buildChip(term);
         chipNodes.set(term.id, chip);
         chips.append(chip);
@@ -81,10 +89,11 @@ export function buildSections(container, { onToggle, onNote }) {
     container.append(details);
   }
 
-  container.addEventListener('click', (event) => {
+  // Assigned rather than added, so rebuilding for another mode doesn't stack handlers.
+  container.onclick = (event) => {
     const chip = event.target.closest('.chip');
     if (chip?.dataset.termId) onToggle(chip.dataset.termId);
-  });
+  };
 }
 
 function matchesQuery(term, query) {
@@ -98,13 +107,14 @@ function matchesQuery(term, query) {
 
 /** Reflects the current state onto the already-built DOM. */
 export function syncSections(state, { query = '', appType = null } = {}) {
+  const mode = builtMode;
   const needle = query.trim().toLowerCase();
   const visibleByCategory = new Map();
 
   for (const [termId, chip] of chipNodes) {
-    const term = TERMS_BY_ID.get(termId);
+    const term = mode.termsById.get(termId);
     const selected = state.selected.has(termId);
-    const visible = appliesToAppType(term, appType) && matchesQuery(term, needle);
+    const visible = appliesToFilter(term, appType) && matchesQuery(term, needle);
 
     chip.hidden = !visible;
     chip.classList.toggle('is-selected', selected);
@@ -115,16 +125,16 @@ export function syncSections(state, { query = '', appType = null } = {}) {
   }
 
   for (const [categoryId, block] of categoryNodes) {
-    const category = CATEGORIES_BY_ID.get(categoryId);
-    const blocked = category.requiresAppType && !appType;
+    const category = mode.categoriesById.get(categoryId);
+    const blocked = category.requiresFilter && !appType;
     block.hidden = blocked || !visibleByCategory.get(categoryId);
   }
 
-  for (const section of SECTIONS) {
+  for (const section of mode.sections) {
     const { details, badge } = sectionNodes.get(section.id);
     const count = section.categories.reduce(
       (total, categoryId) =>
-        total + [...state.selected].filter((id) => TERMS_BY_ID.get(id)?.category === categoryId).length,
+        total + [...state.selected].filter((id) => mode.termsById.get(id)?.category === categoryId).length,
       0,
     );
     badge.textContent = String(count);
@@ -144,8 +154,9 @@ export function syncNotes(notes) {
   }
 }
 
-export function renderPresets(container, onPick) {
-  for (const preset of PRESETS) {
+export function renderPresets(container, mode, onPick) {
+  container.replaceChildren();
+  for (const preset of mode.presets) {
     const button = el('button', 'preset');
     button.type = 'button';
     button.append(el('span', 'preset-label', preset.label));
@@ -156,7 +167,7 @@ export function renderPresets(container, onPick) {
 }
 
 /** The removable tag list above the prompt — a quick way to undo a click. */
-export function renderChosen(container, state, onRemove) {
+export function renderChosen(container, state, mode, onRemove) {
   container.replaceChildren();
   const ids = [...state.selected];
   if (!ids.length) {
@@ -164,7 +175,7 @@ export function renderChosen(container, state, onRemove) {
     return;
   }
   for (const id of ids) {
-    const term = TERMS_BY_ID.get(id);
+    const term = mode.termsById.get(id);
     if (!term) continue;
     const tag = el('button', 'tag');
     tag.type = 'button';
@@ -173,5 +184,25 @@ export function renderChosen(container, state, onRemove) {
     tag.append(el('span', null, term.label), el('span', 'tag-x', '×'));
     tag.addEventListener('click', () => onRemove(id));
     container.append(tag);
+  }
+}
+
+/** The prompt-type switcher. Built once; syncModes marks the active one. */
+export function buildModes(container, onPick) {
+  container.replaceChildren();
+  for (const mode of MODES) {
+    const button = el('button', 'mode');
+    button.type = 'button';
+    button.dataset.modeId = mode.id;
+    button.setAttribute('aria-pressed', 'false');
+    button.append(el('span', 'mode-label', mode.label), el('span', 'mode-blurb', mode.blurb));
+    button.addEventListener('click', () => onPick(mode.id));
+    container.append(button);
+  }
+}
+
+export function syncModes(container, activeId) {
+  for (const button of container.querySelectorAll('.mode')) {
+    button.setAttribute('aria-pressed', String(button.dataset.modeId === activeId));
   }
 }
